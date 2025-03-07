@@ -61,9 +61,7 @@ def generate_temp_sso_credentials(file_path: Path):
     response = sts_client.get_caller_identity()
 
     # Just as a sanity check, print the account and ARN details
-    logging.info(
-        f"Generating credentials from SSO Account: {response['Account']}, ARN: {response['Arn']}"
-    )
+    logging.info(f"Generating credentials from SSO Account: {response['Account']}, ARN: {response['Arn']}")
 
     # Extract credentials
     credentials = session.get_credentials()
@@ -81,9 +79,7 @@ def generate_temp_sso_credentials(file_path: Path):
 def create_ecr_repository() -> None:
     """Creates an ECR repository if the config YAML is present."""
     if not ECR_CONFIG_YAML_PATH.exists():
-        logging.info(
-            f"ECR config file {ECR_CONFIG_YAML_PATH} does not exist. Skipping ECR repository creation."
-        )
+        logging.info(f"ECR config file {ECR_CONFIG_YAML_PATH} does not exist. Skipping ECR repository creation.")
         return
 
     with ECR_CONFIG_YAML_PATH.open("r") as f:
@@ -131,9 +127,7 @@ def command_to_string(cmd: List[str]) -> str:
 
 def sanitize_command(command: Iterable[Any]) -> List[str]:
     if not isinstance(command, (list, tuple)):
-        raise TypeError(
-            "We expect the command to be a list of arguments. Do not use single-string commands!"
-        )
+        raise TypeError("We expect the command to be a list of arguments. Do not use single-string commands!")
     return list(map(str, command))
 
 
@@ -174,9 +168,7 @@ def prepare_artifacts(path: Path, docker_target: Optional[DockerTargets]) -> Non
                 tar.add(ROOT_PATH / "README.md", arcname="README.md")
 
         if ROOT_PATH.joinpath("requirements-dev.txt").exists():
-            shutil.copy(
-                ROOT_PATH / "requirements-dev.txt", path / "requirements-dev.txt"
-            )
+            shutil.copy(ROOT_PATH / "requirements-dev.txt", path / "requirements-dev.txt")
 
     shutil.copy(ROOT_PATH / "pyproject.toml", path / "pyproject.toml")
     if ROOT_PATH.joinpath("uv.lock").exists():
@@ -262,9 +254,7 @@ def image_exists_local(docker_image_name: str, docker_image_tag: str) -> bool:
 
     try:
         name_and_tag = f"{docker_image_name}:{docker_image_tag}"
-        cmd_ret = run_command(
-            ["docker", "image", "inspect", name_and_tag], stderr=subprocess.PIPE
-        )
+        cmd_ret = run_command(["docker", "image", "inspect", name_and_tag], stderr=subprocess.PIPE)
 
         yaml_output = yaml.safe_load(cmd_ret)
         for yaml_entry in yaml_output:
@@ -292,9 +282,7 @@ def image_exists_local(docker_image_name: str, docker_image_tag: str) -> bool:
             raise
 
 
-def image_exists_registry(
-    docker_image_name: str, docker_image_tag: str, ecr: str
-) -> bool:
+def image_exists_registry(docker_image_name: str, docker_image_tag: str, ecr: str) -> bool:
     with DockerRegistryAccess(ecr):
         remote_name_and_tag = f"{ecr}/{docker_image_name}:{docker_image_tag}"
         try:
@@ -327,12 +315,8 @@ def exit_if_image_exists(
     if (
         image_exists_local(docker_image_name, docker_image_tag)
         or image_exists_registry(docker_image_name, docker_image_tag, ecr)
-    ) and not ask_yes(
-        message.format(docker_image_name, docker_image_tag, ", overwrite?")
-    ):
-        raise RuntimeError(
-            message.format(docker_image_name, docker_image_tag, ". Build aborted!")
-        )
+    ) and not ask_yes(message.format(docker_image_name, docker_image_tag, ", overwrite?")):
+        raise RuntimeError(message.format(docker_image_name, docker_image_tag, ". Build aborted!"))
 
 
 def build_docker_image(
@@ -529,9 +513,7 @@ def build_image(
         )
 
     if disable_cache and s3_cache_bucket is not None:
-        raise ValueError(
-            "Cannot disable cache but specify an S3 cache at the same time!"
-        )
+        raise ValueError("Cannot disable cache but specify an S3 cache at the same time!")
 
     if s3_cache_bucket is not None and buildx_builder_name is None:
         raise ValueError("S3 cache requires `buildx-builder-name` to be specified!")
@@ -577,9 +559,7 @@ def build_image(
     if upload:
         for tag in docker_image_tags_list:
             if tag not in parsed_overwritable_tags:
-                exit_if_image_exists(
-                    docker_image_name=docker_image_name, docker_image_tag=tag, ecr=ecr
-                )
+                exit_if_image_exists(docker_image_name=docker_image_name, docker_image_tag=tag, ecr=ecr)
 
     with DockerRegistryAccess(ecr), TemporaryDirectory() as context_dir:
         context_dir = Path(context_dir)
