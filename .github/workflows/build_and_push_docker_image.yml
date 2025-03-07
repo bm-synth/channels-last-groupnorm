@@ -1,0 +1,120 @@
+# This workflow requires a specific `build.py` script in the `docker` folder, which is present in the Template
+# (https://github.com/Synthesia-Technologies/Template) repo.
+name: Build and push docker image to ECR.
+
+on:
+  workflow_call:
+    inputs:
+      arn-role:
+        description: "ARN of the AWS role"
+        required: true
+        type: string
+      aws-account-id:
+        description: "AWS Account ID"
+        default: "812634467557"
+        type: string
+      aws-region:
+        description: "AWS Region"
+        default: "eu-west-1"
+        type: string
+      aws-credentials-folder:
+        description: "Location where the aws credentials should be located"
+        default: /tmp/${{ github.sha }}/.aws
+        type: string
+      codeartifact-domain:
+        description: "AWS CodeArtifact domain to log in to."
+        default: "synthesia-rnd"
+        type: string
+      codeartifact-repository:
+        description: "AWS CodeArtifact repository to log in to."
+        default: "synth-pypi"
+        type: string
+      dockerfile-path:
+        description: "Path to the Dockerfile (relative to the build.py script location)."
+        default: "Dockerfile"
+        type: string
+      docker-image-name:
+        description: "Name of the docker image (as will appear in ECR)"
+        required: true
+        type: string
+      docker-image-tags:
+        description: "Comma-separated string of Docker image tags that will be used when building and publishing the Image. Must be of format `{tag1}, {tag2}`"
+        default: "latest"
+        type: string
+      docker-target:
+        description: "Docker image target to build."
+        default: "image-prod"
+        type: string
+      disable-docker-build-cache:
+        description: "Whether to disable docker build cache."
+        default: "false"
+        type: string
+      enable-s3-cache:
+        description: "Whether to enable Docker S3 cache."
+        default: "true"
+        type: string
+      extra-docker-build-args:
+        description: "Comma-separated string of extra build args to be passed to the Docker image. They must be of the format {ARG_1}={value1}, {ARG_2}={value2}"
+        default: ""
+        type: string
+      pip-package-name:
+        description: "Name of the package as installable by pip (e.g. synthesia-{package})"
+        required: true
+        type: string
+      pip-package-version:
+        description: "Version of the package"
+        default: ""
+        type: string
+      python-package-name:
+        description: "Name of the package as importable in python (e.g. {package})"
+        required: true
+        type: string
+      python-version:
+        description: "Version of Python to be used. Overwrites the container's Python version."
+        # Set this to 3.7, 3.8, 3.9, etc. if you want to use a different Python version than the one in the container
+        default: ""
+        type: string
+      overwritable-tags:
+        description: "Comma-separated string of Docker image tags can be overwritten. Must be of format `{tag1}, {tag2}`"
+        default: "latest,dev,stable"
+        type: string
+      mount-codeartifact-credentials:
+        description: "Whether to mount AWS CodeArtifact credentials during docker build."
+        default: "true"
+        type: string
+      package-manager:
+        description: "Package manager, use 'uv', 'pip-tools' or 'poetry'."
+        default: "uv-sync"
+        type: string
+
+jobs:
+  build-and-push-docker-image:
+    runs-on: [self-hosted, research]
+    container:
+      # You can put your own team's base image here
+      image: 812634467557.dkr.ecr.eu-west-1.amazonaws.com/gha-rnd-runner-python-base:py311-latest
+
+    steps:
+      - name: Run build-and-push-docker-image action
+        uses: Synthesia-Technologies/gha-workflows/actions/rnd/build-and-push-docker-image@main
+        with:
+          arn-role: ${{ inputs.arn-role }}
+          aws-account-id: ${{ inputs.aws-account-id }}
+          aws-region: ${{ inputs.aws-region }}
+          aws-credentials-folder: ${{ inputs.aws-credentials-folder }}
+          codeartifact-domain: ${{ inputs.codeartifact-domain }}
+          codeartifact-repository: ${{ inputs.codeartifact-repository }}
+          dockerfile-path: ${{ inputs.dockerfile-path }}
+          docker-image-name: ${{ inputs.docker-image-name }}
+          docker-image-tags: ${{ inputs.docker-image-tags }}
+          docker-target: ${{ inputs.docker-target }}
+          disable-docker-build-cache: ${{ inputs.disable-docker-build-cache }}
+          extra-docker-build-args: ${{ inputs.extra-docker-build-args }}
+          pip-package-name: ${{ inputs.pip-package-name }}
+          pip-package-version: ${{ inputs.pip-package-version }}
+          python-package-name: ${{ inputs.python-package-name }}
+          python-version: ${{ inputs.python-version }}
+          overwritable-tags: ${{ inputs.overwritable-tags }}
+          enable-s3-cache: ${{ inputs.enable-s3-cache }}
+          mount-codeartifact-credentials: ${{ inputs.mount-codeartifact-credentials }}
+          package-manager: ${{ inputs.package-manager }}

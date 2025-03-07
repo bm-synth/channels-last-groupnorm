@@ -1,0 +1,46 @@
+# Copyright (c) 2025 Synthesia Limited - All Rights Reserved
+#
+# Unauthorized copying of this file, via any medium is strictly prohibited.
+# Proprietary and confidential.
+
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+exclude: ^(project_name_pyproject.jinja|project_slug.jinja|github_repo_name.jinja|.python-version)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: cef0300fd0fc4d2a87a85fa2093c6b283ea36f4b  # frozen: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: mixed-line-ending
+      - id: no-commit-to-branch
+        args: [--branch, main]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "d7f0995508bdaeb0a1f4a838500d6a0a1fc6ec7b"  # frozen: v0.9.5
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: "4bd367038fb43aa7a829be61029b82f730350731"  # frozen: 0.5.29
+    hooks:
+      # Update the uv lockfile
+      - id: uv-lock
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    # pyright version.
+    rev: c82fac2803368a442b4615cca424d65951932ffc  # frozen: v1.1.393
+    hooks:
+      - id: pyright

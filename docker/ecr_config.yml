@@ -1,0 +1,5 @@
+- name: synthesia-rnd-channels-last-groupnorm
+  tags:
+    VantaDescription: ECR repository for the channels_last_groupnorm project.
+    VantaOwner: allmlplatform@synthesia.io
+    VantaNonProd: 'True'

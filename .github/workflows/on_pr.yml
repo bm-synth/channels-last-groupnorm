@@ -1,0 +1,43 @@
+name: On PR
+
+on:
+  pull_request:
+  merge_group:
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: write # This is required for pushing version bump
+  pull-requests: write # This is required for commenting back to a PR the pytest coverage report
+
+jobs:
+
+  python-lint-and-test-pr:
+    uses: ./.github/workflows/python_lint_and_test.yml
+    with:
+      arn-role: arn:aws:iam::812634467557:role/gha-nlp-role
+    secrets:
+      GHA_RNDUVPC_DEPLOY_KEY: ${{ secrets.GHA_RNDUVPC_DEPLOY_KEY }}
+
+  hadolint-pr:
+    uses: Synthesia-Technologies/gha-workflows/.github/workflows/hadolint.yaml@main
+    with:
+      dockerfile: docker/Dockerfile
+
+  push-python-package-pr:
+    needs: python-lint-and-test-pr
+    if: ${{ github.event_name != 'merge_group' }}
+    uses: ./.github/workflows/push_python_package.yml
+    with:
+      arn-role: arn:aws:iam::812634467557:role/gha-nlp-role
+
+  build-and-push-docker-image-pr:
+    needs: push-python-package-pr
+    if: ${{ github.event_name != 'merge_group' }}
+    uses: ./.github/workflows/build_and_push_docker_image.yml
+    with:
+      arn-role: arn:aws:iam::812634467557:role/gha-nlp-role
+      docker-image-name: synthesia-rnd-channels-last-groupnorm
+      docker-image-tags: "dev, ${{ needs.push-python-package-pr.outputs.package-base-version }}.dev0-${{ github.event.pull_request.head.sha }}"
+      pip-package-name: synthesia-rnd-channels-last-groupnorm
+      pip-package-version: "${{ needs.push-python-package-pr.outputs.package-dev-version }}"
+      python-package-name: channels_last_groupnorm

@@ -1,0 +1,93 @@
+# Copyright (c) 2025 Synthesia Limited - All Rights Reserved
+#
+# Unauthorized copying of this file, via any medium is strictly prohibited.
+# Proprietary and confidential.
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthesia-rnd-channels-last-groupnorm"
+dynamic = ["version"]
+
+
+authors = [{ name = "Ivan Chelombiev" }]
+classifiers = ["Programming Language :: Python :: 3"]
+license = { text = "Copyrights (c) 2025 Synthesia Limited - All Rights Reserved." }
+readme = "README.md"
+
+requires-python = ">=3.11"
+
+dependencies = [
+  "synthesia-datalib>=1.0.0",
+  "typer>=0.9.0"
+]
+
+[tool.uv]
+dev-dependencies = [
+  "click~=8.1",
+  "pytest~=7.2",
+  "pre-commit>=3.2.0,<5.0",
+  "ruff~=0.8",
+  "build~=0.10",
+  "pyright>=1.1.390,<2.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+reportImportCycles = "error"
+reportUnusedVariable = true
+reportCallInDefaultInitializer = true
+reportMissingImports = "none"
+reportTypedDictNotRequiredAccess = false
+exclude = ["tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib"]
+
+[tool.ruff]
+exclude = [
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".idea",
+  ".vscode",
+  "__pycache__",
+  ".pytest_cache",
+  ".ipynb_checkpoints",
+  "build",
+  "dist",
+  "data",
+  "*/*.jpg",
+  "*/*.png",
+]
+line-length = 120
+
+[tool.ruff.lint]
+fixable = ["E", "F", "I", "N", "W"]
+ignore = ["E401"]
+select = [
+  # "D", # pydocstyle - uncomment if you want to use
+  "E", # pycodestyle
+  "F", # pyFlakes
+  "I", # isort
+  "N", # pep8-naming
+  "W", # Warning
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pipeline", "enactsdk", "datalib"]
+known-local-folder = ["channels_last_groupnorm"]

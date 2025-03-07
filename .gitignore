@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# system specific files
+.DS_Store
+
+# Distribution / packaging
+.Python
+build/
+!build/.keep
+develop-eggs/
+dist/
+!dist/.keep
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments
+venv/
+!venv/pip.conf
+.venv/
+!.venv/pip.conf
+
+# Data
+data/
+!data/.keep
+# *.csv
+*.pickle
+*.pkl
+# *.json
+*.dot
+*.png
+*.so
+
+# IDE files
+.idea/aws.xml
+.vscode
+
+# Docker
+docker_build/
+
+# Allowlist pictures in media folder
+!media/*.png
+!media/*.jpg
+!media/*.jpeg
