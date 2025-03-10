@@ -1101,6 +1101,7 @@ wheels = [
 name = "synthesia-rnd-channels-last-groupnorm"
 source = { editable = "." }
 dependencies = [
+    { name = "setuptools" },
     { name = "synthesia-datalib" },
     { name = "torch" },
     { name = "typer" },
@@ -1118,6 +1119,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "setuptools" },
     { name = "synthesia-datalib", specifier = ">=1.0.0" },
     { name = "torch", specifier = ">=2.5.1" },
     { name = "typer", specifier = ">=0.9.0" },

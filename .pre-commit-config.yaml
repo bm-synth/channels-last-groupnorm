@@ -38,6 +38,7 @@ repos:
     hooks:
       # Update the uv lockfile
       - id: uv-lock
+        args: [--index-strategy, unsafe-best-match]
 
   - repo: https://github.com/RobertCraigie/pyright-python
     # pyright version.
