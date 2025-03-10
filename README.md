@@ -2,7 +2,7 @@
 A highly optimized CUDA kernel for channels last (NHWC) group normalization in PyTorch.
 
 ## Motivation
-As of January 16, 2024, PyTorch does not have a CUDA implementation for NHWC group normalization (GN). NHWC can often boost a CNN's inference/training speed on GPU by 1.25x because Tensor Cores run convolutions in NHWC format. However, since GN doesn't have a NHWC kernel, this speedup is nullified by the memory permutation operators to convert a tensor from NHWC to NCHW, run the GN forward/backward, then convert the output back to NHWC. Furthermore, many widely used models (e.g. Stable Diffusion) use GN rather than BatchNorm, making a NHWC GN the missing link to enabling the 1.25x speedup by running these models in NHWC. 
+As of January 16, 2024, PyTorch does not have a CUDA implementation for NHWC group normalization (GN). NHWC can often boost a CNN's inference/training speed on GPU by 1.25x because Tensor Cores run convolutions in NHWC format. However, since GN doesn't have a NHWC kernel, this speedup is nullified by the memory permutation operators to convert a tensor from NHWC to NCHW, run the GN forward/backward, then convert the output back to NHWC. Furthermore, many widely used models (e.g. Stable Diffusion) use GN rather than BatchNorm, making a NHWC GN the missing link to enabling the 1.25x speedup by running these models in NHWC.
 
 Finally, by fusing the activation with the GN kernel, further speedups and memory savings can be made.
 
@@ -28,8 +28,8 @@ On a RTX 3060 Max-Q, this implementation runs significantly faster than PyTorch'
 The CUDA kernels also compile about 5x faster than PyTorch's native GN CUDA kernels (from ~100 seconds to ~20 seconds) on my laptop (Intel i7-12700H @ 2.7 GHz CPU) as I removed many torch header files which slowed down compilation time.
 
 ## Todo
-- [x] Working forward kernel for all size inputs 
-- [x] Working backward kernel for all size inputs 
+- [x] Working forward kernel for all size inputs
+- [x] Working backward kernel for all size inputs
 - [x] Forward/backward kernel surpasses PyTorch GN speed and matches stable-fast Triton GN
 - [X] Python wrapper for fused forward activation (e.g. fused GN + Silu)
 - [x] Backward pass with fused activation gradients

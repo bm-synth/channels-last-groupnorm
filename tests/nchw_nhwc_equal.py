@@ -1,8 +1,9 @@
 # Checks if the outputs between NCHW and NHWC inputs are the same for the GN_NHWC layer
 # note: this is not an exhaustive check
-from gnnhwc import GN_NHWC
-import torch.nn as nn
 import torch
+
+from gnnhwc import GN_NHWC
+
 
 def test_nchw_nwhc():
     N, R, G, C = 1, 256, 32, 128
@@ -13,10 +14,10 @@ def test_nchw_nwhc():
     rand_dy = torch.rand_like(x)
     rand_dy_nhwc = rand_dy.to(memory_format=torch.channels_last)
 
-    for act in ['identity', 'silu', 'gelu', 'gelu_tanh']:
+    for act in ["identity", "silu", "gelu", "gelu_tanh"]:
         for dtype in [torch.half, torch.float, torch.double, torch.bfloat16]:
             m = GN_NHWC(G, C, act).cuda().to(dtype)
-            #m = nn.GroupNorm(G, C).cuda().to(dtype)
+            # m = nn.GroupNorm(G, C).cuda().to(dtype)
             out1 = m(x.to(dtype))
             out2 = m(x_nhwc.to(dtype))
             out1.backward(rand_dy)
