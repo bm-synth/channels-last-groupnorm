@@ -6,8 +6,8 @@ from gnnhwc import GN_NHWC
 
 
 def test_nchw_nwhc():
-    N, R, G, C = 1, 256, 32, 128
-    x = torch.randn((N, C, R, R)).cuda()
+    n, r, g, c = 1, 256, 32, 128
+    x = torch.randn((n, r, g, c)).cuda()
     x_nhwc = x.to(memory_format=torch.channels_last)
     x.requires_grad_(True)
     x_nhwc.requires_grad_(True)
@@ -16,7 +16,7 @@ def test_nchw_nwhc():
 
     for act in ["identity", "silu", "gelu", "gelu_tanh"]:
         for dtype in [torch.half, torch.float, torch.double, torch.bfloat16]:
-            m = GN_NHWC(G, C, act).cuda().to(dtype)
+            m = GN_NHWC(g, c, act).cuda().to(dtype)
             # m = nn.GroupNorm(G, C).cuda().to(dtype)
             out1 = m(x.to(dtype))
             out2 = m(x_nhwc.to(dtype))
