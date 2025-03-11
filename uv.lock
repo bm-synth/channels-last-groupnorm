@@ -1,10 +1,9 @@
 version = 1
-revision = 1
 requires-python = ">=3.11"
 resolution-markers = [
-    "python_full_version >= '3.13'",
-    "python_full_version == '3.12.*'",
     "python_full_version < '3.12'",
+    "python_full_version == '3.12.*'",
+    "python_full_version >= '3.13'",
 ]
 
 [[package]]
@@ -18,30 +17,30 @@ wheels = [
 
 [[package]]
 name = "boto3"
-version = "1.37.9"
+version = "1.37.10"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 dependencies = [
     { name = "botocore" },
     { name = "jmespath" },
     { name = "s3transfer" },
 ]
-sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/boto3/1.37.9/boto3-1.37.9.tar.gz", hash = "sha256:51b76da93d7c2a3dff6155ee4aa25455940e7ade08292d22aeeed08b9e0dbf0b" }
+sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/boto3/1.37.10/boto3-1.37.10.tar.gz", hash = "sha256:0c6eb8191b1ea4c7a139e56425399405d46e86c7e814ef497176b9af1f7ca056" }
 wheels = [
-    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/boto3/1.37.9/boto3-1.37.9-py3-none-any.whl", hash = "sha256:cfff6e9cf4b987480fbbe85873f3e609aeea1906631c7148e5b7e3c778aebd40" },
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/boto3/1.37.10/boto3-1.37.10-py3-none-any.whl", hash = "sha256:fc649fb4c9521f60660fd562d6bf2034753832968b0c93ec60ad30634afb1b0f" },
 ]
 
 [[package]]
 name = "botocore"
-version = "1.37.9"
+version = "1.37.10"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 dependencies = [
     { name = "jmespath" },
     { name = "python-dateutil" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/botocore/1.37.9/botocore-1.37.9.tar.gz", hash = "sha256:2fdafbb9c44196cd371f4890aedf9f54352348fbae624a3880862d35724f0956" }
+sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/botocore/1.37.10/botocore-1.37.10.tar.gz", hash = "sha256:ab311982a9872eeb4e71906d3e3fcd2ba331a869d0fed16836ade7ce2e58bcea" }
 wheels = [
-    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/botocore/1.37.9/botocore-1.37.9-py3-none-any.whl", hash = "sha256:bf0ab085ae85a4a2fa1733321069c1039745fa65ca9f335a91b8712fd6745d5f" },
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/botocore/1.37.10/botocore-1.37.10-py3-none-any.whl", hash = "sha256:7515c8dfaaf5ba02604db9cf73c172615afee976136f31d8aec628629f24029f" },
 ]
 
 [[package]]
@@ -138,7 +137,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/click/8.1.8/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a" }
 wheels = [
@@ -230,15 +229,15 @@ wheels = [
 
 [[package]]
 name = "google-cloud-core"
-version = "2.4.2"
+version = "2.4.3"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 dependencies = [
     { name = "google-api-core" },
     { name = "google-auth" },
 ]
-sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/google-cloud-core/2.4.2/google_cloud_core-2.4.2.tar.gz", hash = "sha256:a4fcb0e2fcfd4bfe963837fad6d10943754fd79c1a50097d68540b6eb3d67f35" }
+sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/google-cloud-core/2.4.3/google_cloud_core-2.4.3.tar.gz", hash = "sha256:1fab62d7102844b278fe6dead3af32408b1df3eb06f5c7e8634cbd40edc4da53" }
 wheels = [
-    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/google-cloud-core/2.4.2/google_cloud_core-2.4.2-py2.py3-none-any.whl", hash = "sha256:7459c3e83de7cb8b9ecfec9babc910efb4314030c56dd798eaad12c426f7d180" },
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/google-cloud-core/2.4.3/google_cloud_core-2.4.3-py2.py3-none-any.whl", hash = "sha256:5130f9f4c14b4fafdff75c79448f9495cfade0d8775facf1b09c3bf67e027f6e" },
 ]
 
 [[package]]
@@ -458,6 +457,7 @@ name = "nvidia-cublas-cu12"
 version = "12.4.5.8"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cublas-cu12/12.4.5.8/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_aarch64.whl", hash = "sha256:0f8aa1706812e00b9f19dfe0cdb3999b092ccb8ca168c0db5b8ea712456fd9b3" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cublas-cu12/12.4.5.8/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl", hash = "sha256:2fc8da60df463fdefa81e323eef2e36489e1c94335b5358bcb38360adf75ac9b" },
 ]
 
@@ -466,6 +466,7 @@ name = "nvidia-cuda-cupti-cu12"
 version = "12.4.127"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cuda-cupti-cu12/12.4.127/nvidia_cuda_cupti_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:79279b35cf6f91da114182a5ce1864997fd52294a87a16179ce275773799458a" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cuda-cupti-cu12/12.4.127/nvidia_cuda_cupti_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:9dec60f5ac126f7bb551c055072b69d85392b13311fcc1bcda2202d172df30fb" },
 ]
 
@@ -474,6 +475,7 @@ name = "nvidia-cuda-nvrtc-cu12"
 version = "12.4.127"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cuda-nvrtc-cu12/12.4.127/nvidia_cuda_nvrtc_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:0eedf14185e04b76aa05b1fea04133e59f465b6f960c0cbf4e37c3cb6b0ea198" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cuda-nvrtc-cu12/12.4.127/nvidia_cuda_nvrtc_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:a178759ebb095827bd30ef56598ec182b85547f1508941a3d560eb7ea1fbf338" },
 ]
 
@@ -482,6 +484,7 @@ name = "nvidia-cuda-runtime-cu12"
 version = "12.4.127"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cuda-runtime-cu12/12.4.127/nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:961fe0e2e716a2a1d967aab7caee97512f71767f852f67432d572e36cb3a11f3" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cuda-runtime-cu12/12.4.127/nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:64403288fa2136ee8e467cdc9c9427e0434110899d07c779f25b5c068934faa5" },
 ]
 
@@ -504,6 +507,7 @@ dependencies = [
     { name = "nvidia-nvjitlink-cu12" },
 ]
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cufft-cu12/11.2.1.3/nvidia_cufft_cu12-11.2.1.3-py3-none-manylinux2014_aarch64.whl", hash = "sha256:5dad8008fc7f92f5ddfa2101430917ce2ffacd86824914c82e28990ad7f00399" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cufft-cu12/11.2.1.3/nvidia_cufft_cu12-11.2.1.3-py3-none-manylinux2014_x86_64.whl", hash = "sha256:f083fc24912aa410be21fa16d157fed2055dab1cc4b6934a0e03cba69eb242b9" },
 ]
 
@@ -512,6 +516,7 @@ name = "nvidia-curand-cu12"
 version = "10.3.5.147"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-curand-cu12/10.3.5.147/nvidia_curand_cu12-10.3.5.147-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1f173f09e3e3c76ab084aba0de819c49e56614feae5c12f69883f4ae9bb5fad9" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-curand-cu12/10.3.5.147/nvidia_curand_cu12-10.3.5.147-py3-none-manylinux2014_x86_64.whl", hash = "sha256:a88f583d4e0bb643c49743469964103aa59f7f708d862c3ddb0fc07f851e3b8b" },
 ]
 
@@ -525,6 +530,7 @@ dependencies = [
     { name = "nvidia-nvjitlink-cu12" },
 ]
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cusolver-cu12/11.6.1.9/nvidia_cusolver_cu12-11.6.1.9-py3-none-manylinux2014_aarch64.whl", hash = "sha256:d338f155f174f90724bbde3758b7ac375a70ce8e706d70b018dd3375545fc84e" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cusolver-cu12/11.6.1.9/nvidia_cusolver_cu12-11.6.1.9-py3-none-manylinux2014_x86_64.whl", hash = "sha256:19e33fa442bcfd085b3086c4ebf7e8debc07cfe01e11513cc6d332fd918ac260" },
 ]
 
@@ -536,6 +542,7 @@ dependencies = [
     { name = "nvidia-nvjitlink-cu12" },
 ]
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cusparse-cu12/12.3.1.170/nvidia_cusparse_cu12-12.3.1.170-py3-none-manylinux2014_aarch64.whl", hash = "sha256:9d32f62896231ebe0480efd8a7f702e143c98cfaa0e8a76df3386c1ba2b54df3" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cusparse-cu12/12.3.1.170/nvidia_cusparse_cu12-12.3.1.170-py3-none-manylinux2014_x86_64.whl", hash = "sha256:ea4f11a2904e2a8dc4b1833cc1b5181cde564edd0d5cd33e3c168eff2d1863f1" },
 ]
 
@@ -544,6 +551,7 @@ name = "nvidia-cusparselt-cu12"
 version = "0.6.2"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cusparselt-cu12/0.6.2/nvidia_cusparselt_cu12-0.6.2-py3-none-manylinux2014_aarch64.whl", hash = "sha256:067a7f6d03ea0d4841c85f0c6f1991c5dda98211f6302cb83a4ab234ee95bef8" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-cusparselt-cu12/0.6.2/nvidia_cusparselt_cu12-0.6.2-py3-none-manylinux2014_x86_64.whl", hash = "sha256:df2c24502fd76ebafe7457dbc4716b2fec071aabaed4fb7691a201cde03704d9" },
 ]
 
@@ -560,6 +568,7 @@ name = "nvidia-nvjitlink-cu12"
 version = "12.4.127"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-nvjitlink-cu12/12.4.127/nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:4abe7fef64914ccfa909bc2ba39739670ecc9e820c83ccc7a6ed414122599b83" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-nvjitlink-cu12/12.4.127/nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:06b3b9b25bf3f8af351d664978ca26a16d2c5127dbd53c0497e28d1fb9611d57" },
 ]
 
@@ -568,6 +577,7 @@ name = "nvidia-nvtx-cu12"
 version = "12.4.127"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 wheels = [
+    { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-nvtx-cu12/12.4.127/nvidia_nvtx_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:7959ad635db13edf4fc65c06a6e9f9e55fc2f92596db928d169c0bb031e88ef3" },
     { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/nvidia-nvtx-cu12/12.4.127/nvidia_nvtx_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:781e950d9b9f60d8241ccea575b32f5105a5baf4c2351cab5256a24869f12a1a" },
 ]
 
@@ -1099,9 +1109,9 @@ wheels = [
 
 [[package]]
 name = "synthesia-rnd-channels-last-groupnorm"
+version = "0.0.0.dev0+g4846f3c.d20250311"
 source = { editable = "." }
 dependencies = [
-    { name = "setuptools" },
     { name = "synthesia-datalib" },
     { name = "torch" },
     { name = "typer" },
@@ -1119,9 +1129,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "setuptools" },
     { name = "synthesia-datalib", specifier = ">=1.0.0" },
-    { name = "torch", specifier = ">=2.5.1" },
+    { name = "torch", specifier = "==2.6.0" },
     { name = "typer", specifier = ">=0.9.0" },
 ]
 
@@ -1156,22 +1165,22 @@ dependencies = [
     { name = "fsspec" },
     { name = "jinja2" },
     { name = "networkx" },
-    { name = "nvidia-cublas-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cuda-cupti-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cuda-nvrtc-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cuda-runtime-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cudnn-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cufft-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-curand-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cusolver-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cusparse-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-cusparselt-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-nccl-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-nvjitlink-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
-    { name = "nvidia-nvtx-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cublas-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cuda-cupti-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cuda-nvrtc-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cuda-runtime-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cudnn-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cufft-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-curand-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cusolver-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cusparse-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cusparselt-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-nccl-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-nvjitlink-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-nvtx-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
     { name = "setuptools", marker = "python_full_version >= '3.12'" },
     { name = "sympy" },
-    { name = "triton", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "triton", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
     { name = "typing-extensions" },
 ]
 wheels = [
@@ -1194,7 +1203,7 @@ name = "tqdm"
 version = "4.67.1"
 source = { registry = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://synthesia-rnd-812634467557.d.codeartifact.eu-west-1.amazonaws.com/pypi/synth-pypi/simple/tqdm/4.67.1/tqdm-4.67.1.tar.gz", hash = "sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2" }
 wheels = [

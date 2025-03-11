@@ -22,7 +22,7 @@ requires-python = ">=3.11"
 dependencies = [
   "synthesia-datalib>=1.0.0",
   "typer>=0.9.0",
-  "torch>=2.5.1"
+  "torch==2.6.0"
 ]
 
 [tool.uv]
