@@ -49,7 +49,7 @@ jobs:
     runs-on: [self-hosted, research-gpu]
     container:
       # You can put your own team's base image here
-      image: 812634467557.dkr.ecr.eu-west-1.amazonaws.com/gha-rnd-runner-python-base:py311-latest
+      image: http://812634467557.dkr.ecr.eu-west-1.amazonaws.com/synthesia-cudnn-python:12.4.1-cudnn-devel-ubuntu22.04-py311-latest
 
     steps:
       - name: Run python-lint-and-test action
