@@ -1,7 +1,7 @@
 # Tests if op can handle tensors of rank 3 or higher (GN normally uses rank 4 tensors but can take in shapes (N, C, *))
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F  # noqa: N812
 
 from gnnhwc import GN_NHWC
 
@@ -43,7 +43,8 @@ def test_weird_mem_fmt():
     C = 32
     G = 8
     """
-    test pseudo-channels last (x.stride(1) = 1 but non-channels-last) and pseudo-contiguous (x.stride(-1) = 1 but non-contiguous) inputs
+    test pseudo-channels last (x.stride(1) = 1 but non-channels-last)
+    and pseudo-contiguous (x.stride(-1) = 1 but non-contiguous) inputs
     example: x.shape = (5, 4, 3, 2)
     contiguous:           x.stride = (24, 6, 2, 1)
     pseudo-contiguous:    x.stride = (24, 2, 8, 1)

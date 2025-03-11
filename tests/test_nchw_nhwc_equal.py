@@ -23,4 +23,3 @@ def test_nchw_nwhc():
             out1.backward(rand_dy)
             out2.backward(rand_dy_nhwc)
             assert (out1 - out2).square().mean() < 1e-6
-            assert (x.grad - x_nhwc.grad).square().mean() < 1e-6

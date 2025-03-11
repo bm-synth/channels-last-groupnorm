@@ -3,13 +3,13 @@ import itertools
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F  # noqa
 from tqdm import tqdm
 
 from gnnhwc import GN_NHWC
 
 
-class GN_Naive(nn.Module):
+class GN_Naive(nn.Module):  # noqa
     def __init__(self, num_groups: int, nc: int, **kwargs):
         super().__init__()
         self.G = num_groups
@@ -39,16 +39,16 @@ class GN_Naive(nn.Module):
         G = self.G
         D = C // G
         dyr = dy.view(N, G, D, H, W)
-        xr = x.view(N, G, D, H, W)
+        xr = x.view(N, G, D, H, W)  # noqa
         dy_sum = dyr.sum((3, 4))
         xdy_sum = (dyr * xr).sum((3, 4))
         dy_gamma = (self.weight.view(1, G, D) * dy_sum).sum(2)
         xdy_gamma = (self.weight.view(1, G, D) * xdy_sum).sum(2)
-        dweight = ((xdy_sum - self.means[:, :, None] * dy_sum) * self.rstds[:, :, None]).sum(0)
-        dbias = dy_sum.sum(0)
-        c1 = (self.means * dy_gamma - xdy_gamma) / (H * W * D) * self.rstds**3
-        c2 = -self.means * c1 - dy_gamma * self.rstds / (H * W * D)
-        dx = (
+        dweight = ((xdy_sum - self.means[:, :, None] * dy_sum) * self.rstds[:, :, None]).sum(0)  # noqa
+        dbias = dy_sum.sum(0)  # noqa
+        c1 = (self.means * dy_gamma - xdy_gamma) / (H * W * D) * self.rstds**3  # noqa
+        c2 = -self.means * c1 - dy_gamma * self.rstds / (H * W * D)  # noqa
+        dx = (  # noqa
             self.weight.view(1, G, D, 1, 1) * self.rstds.view(N, G, 1, 1, 1) * dyr
             + c1.view(N, G, 1, 1, 1) * xr
             + c2.view(N, G, 1, 1, 1)
@@ -82,7 +82,7 @@ def get_act_fn(act_str):
 
 
 def config_filter(x):  # returns true if config is valid
-    ACT_FN, DTYPE, B, C, H, W, G = x
+    _, DTYPE, B, C, H, W, G = x
     if C % G != 0:
         return False
     if (
@@ -101,11 +101,12 @@ bigx = torch.randn(128 * 1024 * 1024)
 
 
 def check_params(params, verbose=True):
-    vprint = lambda *args, **kwargs: print(*args, **kwargs) if verbose else None
+    vprint = lambda *args, **kwargs: print(*args, **kwargs) if verbose else None  # noqa
     ACT_FN, DTYPE, B, C, H, W, G = params
     vprint(
         blue(
-            f"output testing | ACT_FN: {ACT_FN} | DTYPE: {DTYPE} |B: {B:<2} | C: {C:<4} | H: {H:<4} | W: {W:<4} | G: {G:<3}"
+            f"output testing | ACT_FN: {ACT_FN} | DTYPE: {DTYPE} |B: {B:<2} | \
+            C: {C:<4} | H: {H:<4} | W: {W:<4} | G: {G:<3}"
         )
     )
     xc = bigx[: B * C * H * W].reshape((B, C, H, W)).to(DTYPE).cuda()
@@ -150,7 +151,8 @@ def check_params(params, verbose=True):
             vprint(green(f"{lpad}Negligible difference (err: {err:.2e}) found"))
             return False
 
-        # second stage check: check both torch's GN and custom GN against a naive implementation to see if the error could be caused by rounding errors
+        # second stage check: check both torch's GN and custom GN against a naive implementation to see if the error
+        # could be caused by rounding errors
         if g_naive is None:
             g_naive = act_fn(gn_naive(xc))
         if bwd and g_naive_dx is None:
@@ -159,14 +161,17 @@ def check_params(params, verbose=True):
             g_naive_dx = xc.grad
 
         with torch.no_grad():
-            x_naive = x_naive_fn()  # we use a function because the variable that may be referred to may not be initialized until the function is called, acts similar to a reference/pointer in java/c
+            # we use a function because the variable that may be referred to may not be
+            # initialized until the function is called, acts similar to a reference/pointer in java/c
+            x_naive = x_naive_fn()
             err_ref_naive = (x_ref - x_naive).abs().max()
             err_test_naive = (x_test - x_naive).abs().max()
 
         if err_test_naive < 2 * err_ref_naive:
             vprint(
                 yellow(
-                    f"{lpad}Negligible difference (err: {err:.2e}, test-naive: {err_test_naive:.2e}, ref-naive: {err_ref_naive:.2e}) found"
+                    f"{lpad}Negligible difference (err: {err:.2e}, test-naive: {err_test_naive:.2e}, \
+                        ref-naive: {err_ref_naive:.2e}) found"
                 )
             )
             return False
@@ -291,7 +296,6 @@ def brute_force():
         32,
     )
     all_params = itertools.product(ACT_FNS, DTYPES, Bs, Cs, Rs, Rs, Gs)
-    inputs = None
 
     err_inputs = filter(config_filter, all_params)
     err_inputs = filter(lambda x: x[4] == x[5], err_inputs)  # only allow inputs where H = W to reduce search space
@@ -308,7 +312,8 @@ def test_inputs(inputs, upcast_errors=True):
     if not upcast_errors:
         return err_inputs
 
-    # retry the error inputs but with a higher precision to see if a large error was because of precision issues (or because of programmer error)
+    # retry the error inputs but with a higher precision to see if a large error was because of precision issues
+    # (or because of programmer error)
     for UPCAST_DTYPE in [torch.float, torch.double]:
         inputs = err_inputs[:]
         err_inputs = []

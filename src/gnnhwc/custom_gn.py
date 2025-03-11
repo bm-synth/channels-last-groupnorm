@@ -2,11 +2,11 @@ import os
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F  # noqa
 
 module_dir = os.path.dirname(os.path.abspath(__file__))
 
-from torch.utils.cpp_extension import load
+from torch.utils.cpp_extension import load  # noqa
 
 gn_op = load(
     name="gn_op",
@@ -31,7 +31,7 @@ gn_op = load(
 )
 
 
-class GN_NHWC_Func(torch.autograd.Function):
+class GN_NHWC_Func(torch.autograd.Function):  # noqa
     @staticmethod
     def forward(ctx, X: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor, G: int, eps: float, activation: str):
         ctx.x_shape = X.shape
@@ -52,7 +52,7 @@ class GN_NHWC_Func(torch.autograd.Function):
         return dx.view(ctx.x_shape), dgamma, dbeta, None, None, None
 
 
-class GN_NHWC(nn.GroupNorm):
+class GN_NHWC(nn.GroupNorm):  # noqa
     def __init__(self, num_groups: int, num_channels: int, activation="identity", **kwargs):
         super().__init__(num_groups, num_channels, **kwargs)
         activation_to_code = {
@@ -67,12 +67,13 @@ class GN_NHWC(nn.GroupNorm):
         self.act_code = activation_to_code[activation]
 
     @torch._dynamo.disable
-    def forward(self, x):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
         # N, C, H, W = x.shape
         # x = x.view(x.shape[0], x.shape[1], -1)
-        G = self.num_groups
+        x = input
         if x.stride(1) == 1:  # channels last format
-            # make sure the other dims in x are contiguous (e.g. shape (2, 3, 5, 9) should have stride (135, 1, 27, 3) and not (135, 1, 3, 15))
+            # make sure the other dims in x are contiguous (e.g. shape (2, 3, 5, 9)
+            # should have stride (135, 1, 27, 3) and not (135, 1, 3, 15))
             inner_dims = range(2, x.ndim)
             x_contiguous = x.permute(0, *inner_dims, 1).contiguous()
             inner_dims = range(1, x.ndim - 1)
@@ -82,7 +83,7 @@ class GN_NHWC(nn.GroupNorm):
             x = x.contiguous()
             activations = [lambda x: x, F.relu, F.silu, F.gelu, lambda x: F.gelu(x, approximate="tanh")]
             act_fn = activations[self.act_code]
-            fwd_fn = lambda x, w, b, g, eps, _act: act_fn(F.group_norm(x, g, w, b, eps))
+            fwd_fn = lambda x, w, b, g, eps, _act: act_fn(F.group_norm(x, g, w, b, eps))  # noqa
 
         if self.affine:
             return fwd_fn(x, self.weight, self.bias, self.num_groups, self.eps, self.act_code)

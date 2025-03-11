@@ -31,7 +31,7 @@ template <typename T> struct alignas(4 * sizeof(T)) float_vec<T, 4> { T x, y, z,
 typedef struct block_params {
   int t; // threads per block
   int rows_per_block; // dimensionality (number of rows of data that each threadblock proceesses in parallel)
-  int blocks_per_row; // factor (number of different threadblocks needed to represent one row of data) 
+  int blocks_per_row; // factor (number of different threadblocks needed to represent one row of data)
 } block_params_t;
 
 inline block_params_t calc_block_params(const int ideal_num_threads, const int threads_per_row, const int snap = -1) {
@@ -291,7 +291,7 @@ compute_stats_pt2(
   rstds[ng] = rsqrt(var + static_cast<T_ACC>(eps));
 }
 
-// intrinsics used in scale_shift because pytorch upcasts fp16/bf16 in these ops 
+// intrinsics used in scale_shift because pytorch upcasts fp16/bf16 in these ops
 template <typename T> __device__ T mul(T a, T b);
 inline __device__ double mul(double a, double b) { return a * b; }
 inline __device__ float mul(float a, float b) { return a * b; }
@@ -391,7 +391,7 @@ scale_shift_kernel(
     idx += c;
 
     V X_vec = X_vecs[idx];
-    
+
     if constexpr (vec_elems == 1)
       y_vecs[idx] = {act_fn(fma(X_vec.x, fused_weight.x, fused_bias.x))};
     else if constexpr (vec_elems == 2) {
@@ -460,7 +460,7 @@ void run_gn_fwd_kernels(
   const int partial_groups = (groups_per_block == 1) ? blocks_per_row : G; // number of group intermediates produced per element after compute_stats_pt1, must be a multiple of G
   WelfordType *welford_data = (WelfordType*)c10::cuda::CUDACachingAllocator::raw_alloc(sizeof(WelfordType) * N * partial_groups * H);
   cudaStream_t cuda_stream = at::cuda::getCurrentCUDAStream();
-  
+
   // compute means/rstds over width dimension
   {
     auto [TPB, rows_per_block, blocks_per_row] = calc_block_params(W * C, C, C / G); // same fn + args as the one a couple lines up but repeated for clarity
@@ -473,7 +473,7 @@ void run_gn_fwd_kernels(
 
     compute_stats_pt1<<<dim3(N, H, blocks_per_row), dim3(TPB / rows_per_block, rows_per_block), 0, cuda_stream>>>(
         X_data,
-        H, W, C, G, 
+        H, W, C, G,
         w_loops, D, groups_per_block, reduce_n,
         welford_data
     );
@@ -634,7 +634,7 @@ width_reduce(
   }
 
   // put reduced outputs into return buffers
-  if (threadIdx.y != 0) return; 
+  if (threadIdx.y != 0) return;
   // at this point ty = 0 and c < C -> maximum of C threads/block reaching past this point (fewer threads if blocks_per_row > 1)
   int out_idx = 0;
   out_idx += n * C * H;
@@ -706,7 +706,7 @@ compute_dweight_dbias(
     T *dweight_data,
     T *dbias_data) {
   /*
-    Computes derivatives wrt the weight and bias. 
+    Computes derivatives wrt the weight and bias.
     grid: (x=blocks_per_row), block: (x=C/blocks_per_row)
    */
   using T_ACC = typename acc_type<T>::type;
