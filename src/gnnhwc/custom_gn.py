@@ -33,22 +33,22 @@ gn_op = load(
 
 class GN_NHWC_Func(torch.autograd.Function):  # noqa
     @staticmethod
-    def forward(ctx, x: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor, g: int, eps: float, activation: str):
-        ctx.x_shape = x.shape
+    def forward(ctx, X: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor, G: int, eps: float, activation: str):
+        ctx.x_shape = X.shape
 
-        x_flat = x.view(x.shape[0], x.shape[1], -1)
-        x_out, means, rstds = torch.ops.gnop.fwd(x_flat, weight, bias, g, eps, activation)
-        ctx.save_for_backward(x_flat, weight, bias, means, rstds)
-        ctx.G = g
+        X_flat = X.view(X.shape[0], X.shape[1], -1)
+        X_out, means, rstds = torch.ops.gnop.fwd(X_flat, weight, bias, G, eps, activation)
+        ctx.save_for_backward(X_flat, weight, bias, means, rstds)
+        ctx.G = G
         ctx.activation = activation
-        return x_out.view(ctx.x_shape)
+        return X_out.view(ctx.x_shape)
 
     @staticmethod
     def backward(ctx, dy: torch.Tensor):
-        x_flat, weight, bias, means, rstds = ctx.saved_tensors
-        dy = dy.contiguous(memory_format=torch.channels_last).view(x_flat.shape)
-        assert dy.stride() == x_flat.stride()
-        dx, dgamma, dbeta = torch.ops.gnop.bwd(dy, x_flat, weight, bias, means, rstds, ctx.G, ctx.activation)
+        X_flat, weight, bias, means, rstds = ctx.saved_tensors
+        dy = dy.contiguous(memory_format=torch.channels_last).view(X_flat.shape)
+        assert dy.stride() == X_flat.stride()
+        dx, dgamma, dbeta = torch.ops.gnop.bwd(dy, X_flat, weight, bias, means, rstds, ctx.G, ctx.activation)
         return dx.view(ctx.x_shape), dgamma, dbeta, None, None, None
 
 
@@ -67,10 +67,10 @@ class GN_NHWC(nn.GroupNorm):  # noqa
         self.act_code = activation_to_code[activation]
 
     @torch._dynamo.disable
-    def forward(self, x):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
         # N, C, H, W = x.shape
         # x = x.view(x.shape[0], x.shape[1], -1)
-        _ = self.num_groups
+        x = input
         if x.stride(1) == 1:  # channels last format
             # make sure the other dims in x are contiguous (e.g. shape (2, 3, 5, 9)
             # should have stride (135, 1, 27, 3) and not (135, 1, 3, 15))
