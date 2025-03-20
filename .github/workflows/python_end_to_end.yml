@@ -1,0 +1,137 @@
+name: Linting and unit testing of the code
+
+on:
+  workflow_call:
+    inputs:
+      aws-account-id:
+        description: "AWS Account ID"
+        default: "812634467557"
+        type: string
+      arn-role:
+        description: "ARN of the AWS role"
+        required: true
+        type: string
+      aws-region:
+        description: "Region of the AWS"
+        default: "eu-west-1"
+        type: string
+      codeartifact-domain:
+        description: "AWS CodeArtifact domain to log in to."
+        default: "synthesia-rnd"
+        type: string
+      codeartifact-repository:
+        description: "AWS CodeArtifact repository to log in to."
+        default: "synth-pypi"
+        type: string
+      generate-pytest-coverage:
+        description: "Whether to also generate pytest coverage analysis"
+        default: "true"
+        type: string
+      python-version:
+        description: "Version of Python to be used. Overwrites the container's Python version."
+        # Set this to 3.7, 3.8, 3.9, etc. if you want to use a different Python version than the one in the container
+        default: ""
+        type: string
+      requirements-file:
+        description: "Type of requirements file to install dependencies from. Currently supports `requirements.txt`-like file and `setup.py`"
+        default: "uv.lock"
+        type: string
+
+    secrets:
+      GHA_RNDUVPC_DEPLOY_KEY:
+        required: true
+
+    outputs:
+      package-base-version:
+        description: Resulting Python Package version
+        value: ${{ jobs.linux-x64-build-job.outputs.package-base-version }}
+      package-dev-version:
+        description: Resulting Python Package version
+        value: ${{ jobs.linux-x64-build-job.outputs.package-dev-version }}
+
+jobs:
+  linux-build-job:
+    runs-on: [self-hosted, research-gpu]
+    container:
+      # You can put your own team's base image here
+      image: 812634467557.dkr.ecr.eu-west-1.amazonaws.com/synthesia-cuda-devel:12.4.1-ubuntu22.04-latest
+    outputs:
+      package-base-version: ${{ steps.resolve-version.outputs.base-version }}
+      package-dev-version: ${{ steps.resolve-version.outputs.dev-version }}
+    steps:
+      - name: Install dependencies
+        run: |
+          apt-get -yqq update && \
+            apt-get install -yq --no-install-recommends \
+            libmediainfo-dev \
+            autoconf \
+            automake \
+            ca-certificates \
+            bzip2 \
+            g++ \
+            gcc \
+            git \
+            make \
+            ninja-build \
+            python3-all \
+            python3-pip \
+            python-is-python3
+        shell: bash
+
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          fetch-depth: 0
+          show-progress: false
+
+      - name: Compute new version based on semantic versioning
+        id: resolve-version
+        uses: Synthesia-Technologies/gha-workflows/actions/rnd/resolve-new-version@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check version setup in pyproject.toml
+        id: check-versioning-system
+        run: |
+          if grep 'dynamic = \["version"\]' pyproject.toml; then
+            echo "Dynamic versioning is set up in pyproject.toml."
+            echo "DYNAMIC_VERSIONING=1" >> $GITHUB_ENV
+          elif grep -Eo '^version = "[0-9]+\.[0-9]+\.[0-9]+"' pyproject.toml; then
+              echo "Static versioning is set up in pyproject.toml."
+              echo "DYNAMIC_VERSIONING=0" >> $GITHUB_ENV
+          else
+              echo "No versioning setup found in pyproject.toml."
+          fi
+
+      - name: Set stable release to one
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "STABLE_RELEASE=1" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "${{ inputs.arn-role }}"
+          aws-region: "${{ inputs.aws-region }}"
+          role-duration-seconds: 7200
+
+      # Compute capabilities for our GPUs: A100: 8.0; A10G: 8.6; L40 and L40s: 8.9; H100 and H200: 9.0; (source: https://en.wikipedia.org/wiki/CUDA)
+      - name: Set CUDA architecture list
+        run: |
+          echo "TORCH_CUDA_ARCH_LIST=8.0;8.6;8.9;9.0+PTX" >> $GITHUB_ENV
+
+      - name: python-end-to-end
+        uses: Synthesia-Technologies/gha-workflows/actions/rnd/python-end-to-end@main
+        with:
+          aws-account-id: ${{ inputs.aws-account-id }}
+          arn-role: ${{ inputs.arn-role }}
+          aws-region: ${{ inputs.aws-region }}
+          checkout-deploy-key: ${{ secrets.GHA_RNDUVPC_DEPLOY_KEY }}
+          codeartifact-domain: ${{ inputs.codeartifact-domain }}
+          codeartifact-repository: ${{ inputs.codeartifact-repository }}
+          generate-pytest-coverage: ${{ inputs.generate-pytest-coverage == 'false' && 'false' || 'true' }}
+          python-version: ${{ inputs.python-version }}
+          requirements-file: ${{ inputs.requirements-file }}
+          package-manager: "uv-sync"
+          use-cache: "true"
