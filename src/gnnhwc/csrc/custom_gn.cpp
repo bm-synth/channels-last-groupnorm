@@ -6,29 +6,7 @@
 #include <torch/library.h>
 #include "gn_kernel.h"
 
-#include <Python.h>
-
 #define CHECK_CUDA(x) TORCH_CHECK(x.device().is_cuda(), #x " must be a CUDA tensor")
-
-extern "C"
-{
-    /* Creates a dummy empty _ops module that can be imported from Python.
-    The import from Python will load the .so consisting of this file
-    in this extension, so that the TORCH_LIBRARY static initializers
-    below are run. */
-    PyObject* PyInit__ops(void)
-    {
-        static struct PyModuleDef module_def = {
-            PyModuleDef_HEAD_INIT,
-            "_ops", /* name of module */
-            NULL,     /* module documentation, may be NULL */
-            -1,       /* size of per-interpreter state of the module,
-                    or -1 if the module keeps state in global variables. */
-            NULL,     /* methods */
-        };
-        return PyModule_Create(&module_def);
-    }
-}
 
 std::tuple<at::Tensor, at::Tensor, at::Tensor> gn_nhwc_fwd(
     const at::Tensor X,

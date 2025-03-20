@@ -56,6 +56,7 @@ setup(
                 ],
             },
             py_limited_api=True,
+            no_python_abi_suffix=True,
         )
     ],
     cmdclass={"build_ext": BuildExtension},
