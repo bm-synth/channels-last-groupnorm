@@ -36,6 +36,7 @@ dev-dependencies = [
   "build~=0.10",
   "pyright>=1.1.390,<2.0"
 ]
+index-strategy = "unsafe-best-match"
 
 [tool.setuptools.packages.find]
 where = ["src"]

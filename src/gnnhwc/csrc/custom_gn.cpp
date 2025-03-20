@@ -1,5 +1,6 @@
 #include <ATen/ops/empty_like.h>
 #include <ATen/ops/empty.h>
+#include <ATen/DeviceGuard.h>
 #include <ATen/Dispatch.h>
 #include <ATen/Tensor.h>
 #include <torch/library.h>
@@ -20,6 +21,8 @@ std::tuple<at::Tensor, at::Tensor, at::Tensor> gn_nhwc_fwd(
   const int N = X.size(0);
   const int C = X.size(1);
   const int R = X.size(2);
+
+  c10::OptionalDeviceGuard guard(at::device_of(X));
 
   at::Tensor X_nhwc = X.permute({0, 2, 1});
   at::Tensor X_out = at::empty_like(X_nhwc);
@@ -62,6 +65,9 @@ std::tuple<at::Tensor, at::Tensor, at::Tensor> gn_nhwc_bwd(
   //const int H = X.size(2);
   //const int W = X.size(3);
   const int R = X.size(2);
+
+  c10::OptionalDeviceGuard guard(at::device_of(X));
+
   //at::Tensor dy_nhwc = dy.permute({0, 2, 3, 1});
   //at::Tensor X_nhwc = X.permute({0, 2, 3, 1});
   at::Tensor dy_nhwc = dy.permute({0, 2, 1});
