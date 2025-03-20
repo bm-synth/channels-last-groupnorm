@@ -1,10 +1,14 @@
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F  # noqa
 from torch.utils.cpp_extension import load  # noqa
 
-# Import the kernels from the _ops module
-from . import _ops  # noqa: F401
+# Load the kernels from the _ops module
+so_files = list(Path(__file__).parent.glob("_ops*.so"))
+assert len(so_files) == 1, f"Expected one _ops*.so file, found {len(so_files)}"
+torch.ops.load_library(so_files[0])
 
 
 class GN_NHWC_Func(torch.autograd.Function):  # noqa
