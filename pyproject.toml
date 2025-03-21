@@ -4,7 +4,7 @@
 # Proprietary and confidential.
 
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools", "setuptools-scm", "torch"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -37,6 +37,11 @@ dev-dependencies = [
   "pyright>=1.1.390,<2.0"
 ]
 index-strategy = "unsafe-best-match"
+
+[tool.setuptools]
+license-files = []  # hacky fix for https://github.com/pypa/twine/issues/1216
+
+[tool.setuptools_scm]
 
 [tool.setuptools.packages.find]
 where = ["src"]

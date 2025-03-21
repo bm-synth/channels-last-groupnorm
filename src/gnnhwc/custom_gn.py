@@ -1,34 +1,14 @@
-import os
+from pathlib import Path
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F  # noqa
-
-module_dir = os.path.dirname(os.path.abspath(__file__))
-
 from torch.utils.cpp_extension import load  # noqa
 
-gn_op = load(
-    name="gn_op",
-    sources=[
-        os.path.join(module_dir, "csrc/custom_gn.cpp"),
-        os.path.join(module_dir, "csrc/gn_kernel.cu"),
-    ],
-    extra_cuda_cflags=[
-        "-use_fast_math",
-        "-extra-device-vectorization",
-        "-extended-lambda",  # for gpu_kernel (although this isn't used in custom GN kernels)
-        "-lineinfo",  # useful for profiling
-        "-src-in-ptx",
-    ],
-    extra_cflags=[
-        "-Ofast",  # needed or else GN NCHW from source is slower than nn.GroupNorm
-        "-funroll-all-loops",
-        "-march=native",
-    ],
-    is_python_module=False,
-    verbose=True,
-)
+# Load the kernels from the _ops module
+so_files = list(Path(__file__).parent.glob("_ops*.so"))
+assert len(so_files) == 1, f"Expected one _ops*.so file, found {len(so_files)}"
+torch.ops.load_library(so_files[0])
 
 
 class GN_NHWC_Func(torch.autograd.Function):  # noqa
