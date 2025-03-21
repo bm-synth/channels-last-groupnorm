@@ -440,8 +440,6 @@ template <typename T> void scale_shift(dim3 grid_dim, dim3 block_dim, int vec_el
 template <typename T>
 void run_gn_fwd_stats_kernels(
     const T *X_data,
-    const T *weight_data,
-    const T *bias_data,
     const int N,
     const int R,
     const int C,
@@ -596,10 +594,10 @@ template void run_gn_fwd_kernels<c10::Half>(const c10::Half *X_data, const c10::
 template void run_gn_fwd_kernels<c10::BFloat16>(const c10::BFloat16 *X_data, const c10::BFloat16 *weight_data, const c10::BFloat16 *bias_data, const int N, const int R, const int C, const int G, c10::BFloat16 eps, const int64_t act_fn_option, c10::BFloat16 *Y_data, c10::BFloat16 *mean_data, c10::BFloat16 *rstd_data);
 
 
-template void run_gn_fwd_stats_kernels<float>(const float *X_data, const float *weight_data, const float *bias_data, const int N, const int R, const int C, const int G, float eps, float *mean_data, float *rstd_data);
-template void run_gn_fwd_stats_kernels<double>(const double *X_data, const double *weight_data, const double *bias_data, const int N, const int R, const int C, const int G, double eps, double *mean_data, double *rstd_data);
-template void run_gn_fwd_stats_kernels<c10::Half>(const c10::Half *X_data, const c10::Half *weight_data, const c10::Half *bias_data, const int N, const int R, const int C, const int G, c10::Half eps, c10::Half *mean_data, c10::Half *rstd_data);
-template void run_gn_fwd_stats_kernels<c10::BFloat16>(const c10::BFloat16 *X_data, const c10::BFloat16 *weight_data, const c10::BFloat16 *bias_data, const int N, const int R, const int C, const int G, c10::BFloat16 eps, c10::BFloat16 *mean_data, c10::BFloat16 *rstd_data);
+template void run_gn_fwd_stats_kernels<float>(const float *X_data, const int N, const int R, const int C, const int G, float eps, float *mean_data, float *rstd_data);
+template void run_gn_fwd_stats_kernels<double>(const double *X_data, const int N, const int R, const int C, const int G, double eps, double *mean_data, double *rstd_data);
+template void run_gn_fwd_stats_kernels<c10::Half>(const c10::Half *X_data, const int N, const int R, const int C, const int G, c10::Half eps, c10::Half *mean_data, c10::Half *rstd_data);
+template void run_gn_fwd_stats_kernels<c10::BFloat16>(const c10::BFloat16 *X_data, const int N, const int R, const int C, const int G, c10::BFloat16 eps, c10::BFloat16 *mean_data, c10::BFloat16 *rstd_data);
 
 
 /////////////////// backward kernels ///////////////////

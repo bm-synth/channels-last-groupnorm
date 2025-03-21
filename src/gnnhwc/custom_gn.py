@@ -29,11 +29,11 @@ gn_op = load(
 
 class GN_NHWC_Stats_Func(torch.autograd.Function):
     @staticmethod
-    def forward(ctx, X: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor, G: int, eps: float):
+    def forward(ctx, X: torch.Tensor, G: int, eps: float):
         ctx.x_shape = X.shape
 
         X_flat = X.view(X.shape[0], X.shape[1], -1)
-        means, rstds = torch.ops.gnop.fwd_stats(X_flat, weight, bias, G, eps)
+        means, rstds = torch.ops.gnop.fwd_stats(X_flat, G, eps)
         return  means, rstds
 
     @staticmethod
