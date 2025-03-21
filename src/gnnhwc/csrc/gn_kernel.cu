@@ -436,6 +436,67 @@ template <typename T> void scale_shift(dim3 grid_dim, dim3 block_dim, int vec_el
     scale_shift2<T, 4>(grid_dim, block_dim, act_fn_option, X_data, mean_data, rstd_data, weight_data, bias_data, N, R, C, G, y);
 }
 
+
+template <typename T>
+void run_gn_fwd_stats_kernels(
+    const T *X_data,
+    const T *weight_data,
+    const T *bias_data,
+    const int N,
+    const int R,
+    const int C,
+    const int G,
+    T eps,
+    const int64_t act_fn_option,
+    T *mean_data,
+    T *rstd_data) {
+  using T_ACC = typename acc_type<T>::type;
+  using WelfordType = WelfordData<T_ACC, INT>;
+
+  const int H = closest_factor(R);
+  const int W = R / H;
+  auto [TPB, rows_per_block, blocks_per_row] = calc_block_params(W * C, C, C / G);
+  const int groups_per_block = CDIV(G, blocks_per_row); // number of groups processed per block in compute_stats_pt1, needed here because it determines size of welford_data
+  const int partial_groups = (groups_per_block == 1) ? blocks_per_row : G; // number of group intermediates produced per element after compute_stats_pt1, must be a multiple of G
+  WelfordType *welford_data = (WelfordType*)c10::cuda::CUDACachingAllocator::raw_alloc(sizeof(WelfordType) * N * partial_groups * H);
+  cudaStream_t cuda_stream = at::cuda::getCurrentCUDAStream();
+  
+  // compute means/rstds over width dimension
+  {
+    auto [TPB, rows_per_block, blocks_per_row] = calc_block_params(W * C, C, C / G); // same fn + args as the one a couple lines up but repeated for clarity
+    DEBUG("starting compute_stats 1, N: %d, H: %d, W: %d, C: %d, G: %d, D: %d, TPB: %d, rows_per_block: %d, blocks_per_row: %d, groups_per_block: %d\n", N, H, W, C, G, (C / G), TPB, rows_per_block, blocks_per_row, groups_per_block);
+
+    const int w_loops = CDIV(W, rows_per_block);
+    const int D = C / G;
+    const int groups_per_block = CDIV(G, blocks_per_row); // cdiv in case G < blocks_per_row -> ceil(G/blocks_per_row) = 1
+    const int reduce_n = TPB / groups_per_block; // number of inputs that gets reduced to a single output
+
+    compute_stats_pt1<<<dim3(N, H, blocks_per_row), dim3(TPB / rows_per_block, rows_per_block), 0, cuda_stream>>>(
+        X_data,
+        H, W, C, G, 
+        w_loops, D, groups_per_block, reduce_n,
+        welford_data
+    );
+  }
+
+  // compute means/rstds over height dimension
+  {
+    const int partials_per_group = partial_groups / G; // number of blocks to process one group
+    auto [TPB, rows_per_block, blocks_per_row] = calc_block_params(partials_per_group * H, partials_per_group * H);
+    const int R = partials_per_group * H; // R for num "R"educe elements per block
+    const int l = CDIV(R, TPB);
+    DEBUG("starting compute_stats 2, N: %d, H: %d, W: %d, C: %d, G: %d, D: %d, TPB: %d, rows_per_block: %d, blocks_per_row: %d, groups_per_block: %d\n", N, H, W, C, G, (C / G), TPB, rows_per_block, blocks_per_row, groups_per_block);
+    compute_stats_pt2<<<dim3(N, G), TPB, 0, cuda_stream>>>(
+        welford_data,
+        G, R, l, eps,
+        mean_data, rstd_data
+    );
+  }
+
+  c10::cuda::CUDACachingAllocator::raw_delete(welford_data);
+}
+
+
 template <typename T>
 void run_gn_fwd_kernels(
     const T *X_data,
@@ -534,6 +595,13 @@ template void run_gn_fwd_kernels<float>(const float *X_data, const float *weight
 template void run_gn_fwd_kernels<double>(const double *X_data, const double *weight_data, const double *bias_data, const int N, const int R, const int C, const int G, double eps, const int64_t act_fn_option, double *Y_data, double *mean_data, double *rstd_data);
 template void run_gn_fwd_kernels<c10::Half>(const c10::Half *X_data, const c10::Half *weight_data, const c10::Half *bias_data, const int N, const int R, const int C, const int G, c10::Half eps, const int64_t act_fn_option, c10::Half *Y_data, c10::Half *mean_data, c10::Half *rstd_data);
 template void run_gn_fwd_kernels<c10::BFloat16>(const c10::BFloat16 *X_data, const c10::BFloat16 *weight_data, const c10::BFloat16 *bias_data, const int N, const int R, const int C, const int G, c10::BFloat16 eps, const int64_t act_fn_option, c10::BFloat16 *Y_data, c10::BFloat16 *mean_data, c10::BFloat16 *rstd_data);
+
+
+template void run_gn_fwd_stats_kernels<float>(const float *X_data, const float *weight_data, const float *bias_data, const int N, const int R, const int C, const int G, float eps, const int64_t act_fn_option, float *mean_data, float *rstd_data);
+template void run_gn_fwd_stats_kernels<double>(const double *X_data, const double *weight_data, const double *bias_data, const int N, const int R, const int C, const int G, double eps, const int64_t act_fn_option, double *mean_data, double *rstd_data);
+template void run_gn_fwd_stats_kernels<c10::Half>(const c10::Half *X_data, const c10::Half *weight_data, const c10::Half *bias_data, const int N, const int R, const int C, const int G, c10::Half eps, const int64_t act_fn_option, c10::Half *mean_data, c10::Half *rstd_data);
+template void run_gn_fwd_stats_kernels<c10::BFloat16>(const c10::BFloat16 *X_data, const c10::BFloat16 *weight_data, const c10::BFloat16 *bias_data, const int N, const int R, const int C, const int G, c10::BFloat16 eps, const int64_t act_fn_option, c10::BFloat16 *mean_data, c10::BFloat16 *rstd_data);
+
 
 /////////////////// backward kernels ///////////////////
 

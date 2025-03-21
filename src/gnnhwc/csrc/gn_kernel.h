@@ -9,6 +9,20 @@
 #include <torch/library.h>
 
 template <typename T>
+void run_gn_fwd_stats_kernels(
+    const T *X_data,
+    const T *weight_data,
+    const T *bias_data,
+    const int N,
+    const int R,
+    const int C,
+    const int G,
+    T eps,
+    const int64_t act_fn_option,
+    T *mean_data,
+    T *rstd_data);
+
+template <typename T>
 void run_gn_fwd_kernels(
     const T *X_data,
     const T *weight_data,

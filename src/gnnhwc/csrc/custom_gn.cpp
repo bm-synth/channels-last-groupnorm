@@ -41,6 +41,39 @@ std::tuple<at::Tensor, at::Tensor, at::Tensor> gn_nhwc_fwd(
   return {X_out.permute({0, 2, 1}), means, rstds};
 }
 
+std::tuple<at::Tensor, at::Tensor> gn_nhwc_fwd_stats(
+    const at::Tensor X,
+    const at::Tensor weight,
+    const at::Tensor bias,
+    const int64_t G,
+    double eps,
+    const int64_t act_fn_option) {
+  CHECK_CUDA(X);
+  CHECK_CUDA(weight);
+  CHECK_CUDA(bias);
+  const int N = X.size(0);
+  const int C = X.size(1);
+  const int R = X.size(2);
+
+  at::Tensor X_nhwc = X.permute({0, 2, 1});
+  at::Tensor means = at::empty({N, G}, weight.options());
+  at::Tensor rstds = at::empty({N, G}, weight.options());
+
+  AT_DISPATCH_FLOATING_TYPES_AND2(
+    at::ScalarType::Half,
+    at::ScalarType::BFloat16,
+    X.scalar_type(),
+    "group_norm_nhwc_forward", [&]() {
+    run_gn_fwd_stats_kernels<scalar_t>(
+        X_nhwc.const_data_ptr<scalar_t>(),
+        weight.const_data_ptr<scalar_t>(), bias.const_data_ptr<scalar_t>(),
+        N, R, C, G, static_cast<scalar_t>(eps), act_fn_option,
+        means.mutable_data_ptr<scalar_t>(), rstds.mutable_data_ptr<scalar_t>()
+    );
+  });
+  return {means, rstds};
+}
+
 std::tuple<at::Tensor, at::Tensor, at::Tensor> gn_nhwc_bwd(
     const at::Tensor dy,
     const at::Tensor X,
@@ -90,5 +123,6 @@ std::tuple<at::Tensor, at::Tensor, at::Tensor> gn_nhwc_bwd(
 
 TORCH_LIBRARY(gnop, m) {
   m.def("fwd", &gn_nhwc_fwd);
+  m.def("fwd_stats", &gn_nhwc_fwd_stats);
   m.def("bwd", &gn_nhwc_bwd);
 }
