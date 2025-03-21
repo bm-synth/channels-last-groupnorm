@@ -18,7 +18,6 @@ void run_gn_fwd_stats_kernels(
     const int C,
     const int G,
     T eps,
-    const int64_t act_fn_option,
     T *mean_data,
     T *rstd_data);
 
