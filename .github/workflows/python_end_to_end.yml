@@ -121,6 +121,14 @@ jobs:
         run: |
           echo "TORCH_CUDA_ARCH_LIST=8.0;8.6;8.9;9.0+PTX" >> $GITHUB_ENV
 
+      - name: Install GCC13
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install -y gcc-13 g++-13
+
       - name: python-end-to-end
         uses: Synthesia-Technologies/gha-workflows/actions/rnd/python-end-to-end@main
         with:
