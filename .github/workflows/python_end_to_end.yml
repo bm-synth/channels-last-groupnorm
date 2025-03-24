@@ -128,6 +128,8 @@ jobs:
           add-apt-repository ppa:ubuntu-toolchain-r/test
           apt-get update
           apt-get install -y gcc-13 g++-13
+          update-alternatives --remove-all cpp
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 --slave /usr/bin/cpp cpp /usr/bin/cpp-13
 
       - name: python-end-to-end
         uses: Synthesia-Technologies/gha-workflows/actions/rnd/python-end-to-end@main
