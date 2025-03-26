@@ -1,6 +1,6 @@
 #pragma once
-#ifndef WELFORD_H 
-#define WELFORD_H 
+#ifndef WELFORD_H
+#define WELFORD_H
 
 #include <c10/cuda/CUDAMathCompat.h> // for C10_HOST_DEVICE and __ubsan_ignore_float_divide_by_zero__
 
@@ -34,7 +34,6 @@ struct WelfordOps {
       acc_scalar_t new_nf = static_cast<acc_scalar_t>(new_n);
 
       acc_scalar_t delta = data - acc.mean;
-      
       acc_scalar_t new_mean = acc.mean + delta / new_nf;
       acc_scalar_t new_delta = data - new_mean;
       return {

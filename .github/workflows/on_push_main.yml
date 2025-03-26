@@ -1,0 +1,56 @@
+name: On push to main branch
+
+on:
+  push:
+    branches:
+      - 'main'
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: write # This is required for pushing version bump
+
+jobs:
+
+  python-end-to-end-main:
+    uses: ./.github/workflows/python_end_to_end.yml
+    with:
+      arn-role: arn:aws:iam::812634467557:role/gha-syntheticactors-role
+      generate-pytest-coverage: "false"
+    secrets:
+      GHA_RNDUVPC_DEPLOY_KEY: ${{ secrets.GHA_RNDUVPC_DEPLOY_KEY }}
+
+  # build-and-push-docker-image-main:
+  #   needs: python-end-to-end-main
+  #   uses: ./.github/workflows/build_and_push_docker_image.yml
+  #   with:
+  #     arn-role: arn:aws:iam::812634467557:role/gha-nlp-role
+  #     docker-image-name: synthesia-rnd-channels-last-groupnorm
+  #     docker-image-tags: "stable, latest, ${{ needs.python-end-to-end-main.outputs.package-base-version }}"
+  #     pip-package-name: synthesia-rnd-channels-last-groupnorm
+  #     pip-package-version: "${{ needs.python-end-to-end-main.outputs.package-base-version }}"
+  #     python-package-name: channels_last_groupnorm
+
+  make-release:
+    needs: python-end-to-end-main
+    runs-on: [self-hosted, research]
+    container:
+      image: 812634467557.dkr.ecr.eu-west-1.amazonaws.com/gha-rnd-runner-python-base:py310-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Compute new version based on semantic versioning and create a tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          custom_tag: ${{ needs.python-end-to-end-main.outputs.package-base-version }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create git release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}

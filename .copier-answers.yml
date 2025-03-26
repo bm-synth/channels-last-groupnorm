@@ -1,0 +1,9 @@
+# Changes here will be overwritten by Copier
+_commit: v0.7.1
+_src_path: git@github.com:Synthesia-Technologies/rnd-template.git
+create_github_repo: true
+dep_tool: uv
+gha_role_name: gha-nlp-role
+project_author: Ivan Chelombiev
+project_name: channels_last_groupnorm
+python_version: '3.11'
