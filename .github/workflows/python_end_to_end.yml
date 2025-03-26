@@ -54,7 +54,7 @@ jobs:
     runs-on: [self-hosted, research-gpu]
     container:
       # You can put your own team's base image here
-      image: 812634467557.dkr.ecr.eu-west-1.amazonaws.com/synthesia-cuda-devel:12.4.1-ubuntu22.04-latest
+      image: 812634467557.dkr.ecr.eu-west-1.amazonaws.com/synthesia-cuda-devel:12.4.1-ubuntu20.04-latest
     outputs:
       package-base-version: ${{ steps.resolve-version.outputs.base-version }}
       package-dev-version: ${{ steps.resolve-version.outputs.dev-version }}
@@ -120,6 +120,16 @@ jobs:
       - name: Set CUDA architecture list
         run: |
           echo "TORCH_CUDA_ARCH_LIST=8.0;8.6;8.9;9.0+PTX" >> $GITHUB_ENV
+
+      - name: Install GCC11
+        run: |
+          apt-get update
+          apt-get install -y software-properties-common
+          add-apt-repository ppa:ubuntu-toolchain-r/test
+          apt-get update
+          apt-get install -y gcc-11 g++-11
+          update-alternatives --remove-all cpp
+          update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 --slave /usr/bin/cpp cpp /usr/bin/cpp-11
 
       - name: python-end-to-end
         uses: Synthesia-Technologies/gha-workflows/actions/rnd/python-end-to-end@main
