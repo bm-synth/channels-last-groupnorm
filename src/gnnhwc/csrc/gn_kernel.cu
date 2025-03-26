@@ -771,7 +771,7 @@ compute_dweight_dbias(
     T *dweight_data,
     T *dbias_data) {
   /*
-    Computes derivatives wrt the weight and bias. 
+    Computes derivatives wrt the weight and bias.
     grid: (x=blocks_per_row), block: (x=C/blocks_per_row)
    */
   using T_ACC = typename acc_type<T>::type;
