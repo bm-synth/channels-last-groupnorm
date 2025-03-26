@@ -457,7 +457,7 @@ void run_gn_fwd_stats_kernels(
   const int partial_groups = (groups_per_block == 1) ? blocks_per_row : G; // number of group intermediates produced per element after compute_stats_pt1, must be a multiple of G
   WelfordType *welford_data = (WelfordType*)c10::cuda::CUDACachingAllocator::raw_alloc(sizeof(WelfordType) * N * partial_groups * H);
   cudaStream_t cuda_stream = at::cuda::getCurrentCUDAStream();
-  
+
   // compute means/rstds over width dimension
   {
     auto [TPB, rows_per_block, blocks_per_row] = calc_block_params(W * C, C, C / G); // same fn + args as the one a couple lines up but repeated for clarity
@@ -470,7 +470,7 @@ void run_gn_fwd_stats_kernels(
 
     compute_stats_pt1<<<dim3(N, H, blocks_per_row), dim3(TPB / rows_per_block, rows_per_block), 0, cuda_stream>>>(
         X_data,
-        H, W, C, G, 
+        H, W, C, G,
         w_loops, D, groups_per_block, reduce_n,
         welford_data
     );

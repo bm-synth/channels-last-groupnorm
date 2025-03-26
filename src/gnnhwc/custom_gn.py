@@ -10,6 +10,7 @@ so_files = list(Path(__file__).parent.glob("_ops*.so"))
 assert len(so_files) == 1, f"Expected one _ops*.so file, found {len(so_files)}"
 torch.ops.load_library(so_files[0])
 
+
 class GN_NHWC_Stats_Func(torch.autograd.Function):  # noqa
     @staticmethod
     def forward(ctx, X: torch.Tensor, G: int, eps: float):
@@ -17,7 +18,7 @@ class GN_NHWC_Stats_Func(torch.autograd.Function):  # noqa
 
         X_flat = X.view(X.shape[0], X.shape[1], -1)
         means, rstds = torch.ops.gnop.fwd_stats(X_flat, G, eps)
-        return  means, rstds
+        return means, rstds
 
     @staticmethod
     def backward(ctx, dy: torch.Tensor):
