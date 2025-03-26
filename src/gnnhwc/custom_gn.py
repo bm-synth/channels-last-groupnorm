@@ -21,7 +21,7 @@ class GN_NHWC_Stats_Func(torch.autograd.Function):  # noqa
 
     @staticmethod
     def backward(ctx, dy: torch.Tensor):
-        raise NotImplementedError("This function is not implemented.")
+        raise NotImplementedError("Backward pass not implemented for GN_NHWC_Stats_Func.")
 
 
 class GN_NHWC_Func(torch.autograd.Function):  # noqa
