@@ -34,6 +34,7 @@ struct WelfordOps {
       acc_scalar_t new_nf = static_cast<acc_scalar_t>(new_n);
 
       acc_scalar_t delta = data - acc.mean;
+
       acc_scalar_t new_mean = acc.mean + delta / new_nf;
       acc_scalar_t new_delta = data - new_mean;
       return {
