@@ -25,7 +25,6 @@ class GN_NHWC_Stats_Func(torch.autograd.Function):  # noqa
 
 
 class GN_NHWC_Func(torch.autograd.Function):  # noqa
-
     @staticmethod
     def forward(ctx, X: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor, G: int, eps: float, activation: str):
         ctx.x_shape = X.shape
