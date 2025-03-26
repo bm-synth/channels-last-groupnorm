@@ -776,7 +776,11 @@ compute_dweight_dbias(
    */
   using T_ACC = typename acc_type<T>::type;
   const int c = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (c >= C) return;
+  const int g = c / D;
   T_ACC sum1 = 0;
+  T_ACC sum2 = 0;
 
   for (int n = 0; n < N; ++n) {
     const int nc = n * C + c;
