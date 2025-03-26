@@ -699,8 +699,10 @@ width_reduce(
   }
 
   // put reduced outputs into return buffers
-  if (threadIdx.y != 0) return; 
+  if (threadIdx.y != 0) return;
+  // at this point ty = 0 and c < C -> maximum of C threads/block reaching past this point (fewer threads if blocks_per_row > 1)
   int out_idx = 0;
+  out_idx += n * C * H;
   out_idx += c * H;
   out_idx += blockIdx.y;
 
